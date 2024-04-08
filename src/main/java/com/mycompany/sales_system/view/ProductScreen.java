@@ -10,10 +10,6 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
 
-/**
- *
- * @author aabreu
- */
 public class ProductScreen extends javax.swing.JInternalFrame {
 
     Connection connection;
@@ -32,21 +28,15 @@ public class ProductScreen extends javax.swing.JInternalFrame {
         jButtonEdit.setEnabled(false);
         jButtonDelete.setEnabled(false);
     }
-    
-     private void enableButtons() {
+
+    private void enableButtons() {
         jButtonSave.setEnabled(false);
         jButtonEdit.setEnabled(true);
         jButtonDelete.setEnabled(true);
     }
 
     private void saveProduct() {
-//        if(jTextFieldIdProduct.getText() == null){
-//            jButtonEdit.setEnabled(false);
-//        } else ()
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.ADD_PRODUCT.getDescription());
             pst.setString(1, jTextFieldName.getText());
             pst.setString(2, jTextFieldQuantity.getText());
@@ -71,9 +61,6 @@ public class ProductScreen extends javax.swing.JInternalFrame {
 
     private void searchProducts() {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCTS.getDescription());
 
             pst.setString(1, jTextFieldSearch.getText() + "%");
@@ -100,9 +87,6 @@ public class ProductScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confima as alterações nos dados deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                if (connection == null) {
-                    connection = ConnectionFactory.CONNECT_DATABASE();
-                }
                 pst = connection.prepareStatement(SQLQuery.EDIT_PRODUCT.getDescription());
 
                 pst.setString(1, jTextFieldName.getText());
@@ -136,9 +120,6 @@ public class ProductScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                if (connection == null) {
-                    connection = ConnectionFactory.CONNECT_DATABASE();
-                }
                 pst = connection.prepareStatement(SQLQuery.DELETE_PRODUCT.getDescription());
                 pst.setString(1, jTextFieldIdProduct.getText());
                 int deletedClient = pst.executeUpdate();

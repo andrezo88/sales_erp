@@ -10,7 +10,8 @@ import javax.swing.event.InternalFrameEvent;
 
 public class Principal extends javax.swing.JFrame {
 
-    Connection connection = ConnectionFactory.CONNECT_DATABASE();
+    ConnectionFactory connectionFactory = ConnectionFactory.getInstancy();
+    Connection connection = connectionFactory.getConnection();
 
     public Principal() {
         initComponents();

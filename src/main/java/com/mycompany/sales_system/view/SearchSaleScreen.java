@@ -1,6 +1,5 @@
 package com.mycompany.sales_system.view;
 
-import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +11,6 @@ import net.proteanit.sql.DbUtils;
 public class SearchSaleScreen extends javax.swing.JFrame {
 
     Connection connection;
-    PreparedStatement pst;
-    ResultSet rs;
 
     public SearchSaleScreen(Connection connection) {
         this.connection = connection;
@@ -23,10 +20,6 @@ public class SearchSaleScreen extends javax.swing.JFrame {
 
 private void searchSales() {
     try {
-        if (connection == null) {
-            connection = ConnectionFactory.CONNECT_DATABASE();
-        }
-
         String clientName = jTextFieldSalesSearch.getText();
         try (PreparedStatement statement = connection.prepareStatement(SQLQuery.SEARCH_SALES.getDescription())) {
             statement.setString(1, clientName + "%");

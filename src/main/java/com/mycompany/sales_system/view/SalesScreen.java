@@ -29,9 +29,6 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void searchProducts() {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCTS_SALES.getDescription());
 
             pst.setString(1, jTextFieldSearchProduct.getText() + "%");
@@ -44,9 +41,6 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void searchClients() {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.SEARCH_CLIENTS_SALES.getDescription());
 
             pst.setString(1, jTextFieldSearchClient.getText() + "%");
@@ -108,9 +102,6 @@ public class SalesScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma o pedido deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                if (connection == null) {
-                    connection = ConnectionFactory.CONNECT_DATABASE();
-                }
                 pst = connection.prepareStatement(SQLQuery.ADD_SALE.getDescription());
 
                 Integer productId = parseInteger(jTextFieldIdProduct.getText());
@@ -189,10 +180,6 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private boolean searchStock(String id) {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
-
             pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getDescription());
             pst.setString(1, id);
             rs = pst.executeQuery();
@@ -231,9 +218,6 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void updateStock(String id, int quantity) {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
 
             // Verifica se o produto existe no estoque
             pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getDescription());

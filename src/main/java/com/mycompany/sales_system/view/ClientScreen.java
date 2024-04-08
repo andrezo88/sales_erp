@@ -2,13 +2,16 @@ package com.mycompany.sales_system.view;
 
 import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
+import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import net.proteanit.sql.DbUtils;
 
 public final class ClientScreen extends javax.swing.JInternalFrame {
@@ -37,9 +40,6 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
 
     public void saveClient() {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.ADD_CLIENT.getDescription());
             pst.setString(1, jTextFieldName.getText());
             pst.setString(2, jTextFieldEmail.getText());
@@ -70,9 +70,6 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confima as alterações nos dados deste cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                if (connection == null) {
-                    connection = ConnectionFactory.CONNECT_DATABASE();
-                }
                 pst = connection.prepareStatement(SQLQuery.EDIT_CLIENT.getDescription());
 
                 pst.setString(1, jTextFieldName.getText());
@@ -104,9 +101,6 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
 
     public void searchClients() {
         try {
-            if (connection == null) {
-                connection = ConnectionFactory.CONNECT_DATABASE();
-            }
             pst = connection.prepareStatement(SQLQuery.SEARCH_CLIENTS.getDescription());
 
             pst.setString(1, jTextFieldSearch.getText() + "%");
@@ -130,9 +124,6 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                if (connection == null) {
-                    connection = ConnectionFactory.CONNECT_DATABASE();
-                }
                 pst = connection.prepareStatement(SQLQuery.DELETE_CLIENT.getDescription());
                 pst.setString(1, jTextFieldId.getText());
                 int deletedClient = pst.executeUpdate();
@@ -178,6 +169,7 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         jTableClients = new javax.swing.JTable();
         jLabelId = new javax.swing.JLabel();
         jTextFieldId = new javax.swing.JTextField();
+        jButtonAddress = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Cliente");
@@ -271,6 +263,13 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
             }
         });
 
+        jButtonAddress.setText("Endereço");
+        jButtonAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddressActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -281,18 +280,9 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jSeparator1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(330, 330, 330)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(226, 226, 226)
-                                .addComponent(jButtonSave)
-                                .addGap(60, 60, 60)
-                                .addComponent(jButtonEdit)
-                                .addGap(57, 57, 57)
-                                .addComponent(jButtonDelete)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(330, 330, 330)
+                        .addComponent(jLabel1)
+                        .addGap(0, 324, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
@@ -323,6 +313,16 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel2)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(50, 50, 50))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(166, 166, 166)
+                .addComponent(jButtonSave)
+                .addGap(59, 59, 59)
+                .addComponent(jButtonEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonAddress)
+                .addGap(81, 81, 81)
+                .addComponent(jButtonDelete)
+                .addGap(99, 99, 99))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,10 +360,12 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSave)
-                    .addComponent(jButtonEdit)
-                    .addComponent(jButtonDelete))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButtonSave)
+                        .addComponent(jButtonEdit)
+                        .addComponent(jButtonDelete))
+                    .addComponent(jButtonAddress))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
 
@@ -408,8 +410,17 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldIdActionPerformed
 
+    private void jButtonAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddressActionPerformed
+        AddressClient addressClient = new AddressClient(connection);
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Address Client", true);
+        dialog.getContentPane().add(addressClient.getContentPane());
+        dialog.pack();
+        dialog.setVisible(true);   
+    }//GEN-LAST:event_jButtonAddressActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddress;
     private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonEdit;
     private javax.swing.JButton jButtonSave;
