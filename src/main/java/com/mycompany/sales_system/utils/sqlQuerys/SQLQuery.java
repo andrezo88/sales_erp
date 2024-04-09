@@ -15,15 +15,23 @@ public enum SQLQuery {
     SEARCH_CLIENTS_SALES("SELECT id, name, phone, document from clients where name like ?"),
     ADD_SALE("INSERT INTO sales(sale_date, discount, unit_price, quantity, total, id_client, id_product) VALUES(?,?,?,?,?,?,?)"),
     UPDATE_STOCK("UPDATE products SET quantity_stock=? WHERE id=?"),
-    SEARCH_SALES("SELECT s.sale_date as Data_Venda, s.discount as Desconto, s.unit_price as Preco_unitario, s.quantity as quantidade, s.total, c.NAME AS Nome_Cliente, p.NAME AS Nome_Produto FROM SALES s JOIN CLIENTS c ON s.ID_CLIENT = c.ID JOIN PRODUCTS p ON s.ID_PRODUCT = p.ID WHERE c.NAME LIKE ?");
+    SEARCH_SALES("""
+                    SELECT 
+                    s.sale_date as Data_Venda, s.discount as Desconto, s.unit_price as Preco_unitario, s.quantity as quantidade, s.total, 
+                    c.NAME AS Nome_Cliente, p.NAME AS Nome_Produto 
+                    FROM SALES s JOIN CLIENTS c ON s.ID_CLIENT = c.ID 
+                    JOIN PRODUCTS p ON s.ID_PRODUCT = p.ID 
+                    WHERE ${value}.NAME LIKE ?
+                """
+    );
 
-    private final String description;
-    
-    SQLQuery(String description) {
-        this.description = description;
+    private final String query;
+
+    SQLQuery(String query) {
+        this.query = query;
     }
-    
-    public String getDescription() {
-        return description;
+
+    public String getQuery() {
+        return query;
     }
 }

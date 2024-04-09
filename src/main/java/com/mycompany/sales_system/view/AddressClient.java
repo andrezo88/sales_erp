@@ -1,15 +1,11 @@
 package com.mycompany.sales_system.view;
 
-import com.mycompany.sales_system.factory.StateFactory;
 import java.awt.Container;
-import java.sql.Connection;
 
 public class AddressClient extends javax.swing.JPanel {
     
-    Connection connection;
 
-    public AddressClient(Connection connection) {
-        this.connection = connection;
+    public AddressClient() {
         initComponents();
         insertIntoComboBox();
     }
