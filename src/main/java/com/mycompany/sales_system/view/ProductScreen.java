@@ -3,7 +3,6 @@ package com.mycompany.sales_system.view;
 import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
 import java.awt.HeadlessException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,12 +11,10 @@ import net.proteanit.sql.DbUtils;
 
 public class ProductScreen extends javax.swing.JInternalFrame {
 
-    Connection connection;
     PreparedStatement pst;
     ResultSet rs;
 
-    public ProductScreen(Connection connection) {
-        this.connection = connection;
+    public ProductScreen() {
         initComponents();
         searchProducts();
         disableButtons();
@@ -37,7 +34,7 @@ public class ProductScreen extends javax.swing.JInternalFrame {
 
     private void saveProduct() {
         try {
-            pst = connection.prepareStatement(SQLQuery.ADD_PRODUCT.getDescription());
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.ADD_PRODUCT.getQuery());
             pst.setString(1, jTextFieldName.getText());
             pst.setString(2, jTextFieldQuantity.getText());
             pst.setDouble(3, Double.parseDouble(jTextFieldBuyPrice.getText()));
@@ -61,8 +58,7 @@ public class ProductScreen extends javax.swing.JInternalFrame {
 
     private void searchProducts() {
         try {
-            pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCTS.getDescription());
-
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_PRODUCTS.getQuery());
             pst.setString(1, jTextFieldSearch.getText() + "%");
             rs = pst.executeQuery();
             jTableProducts.setModel(DbUtils.resultSetToTableModel(rs));
@@ -87,8 +83,7 @@ public class ProductScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confima as alterações nos dados deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                pst = connection.prepareStatement(SQLQuery.EDIT_PRODUCT.getDescription());
-
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.EDIT_PRODUCT.getQuery());
                 pst.setString(1, jTextFieldName.getText());
                 pst.setString(2, jTextFieldQuantity.getText());
                 pst.setDouble(3, Double.parseDouble(jTextFieldBuyPrice.getText()));
@@ -103,10 +98,6 @@ public class ProductScreen extends javax.swing.JInternalFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Nenhum dado foi alterado. Verifique os valores fornecidos.");
                 }
-//            } catch (SQLIntegrityConstraintViolationException e1) {
-//                JOptionPane.showMessageDialog(null, "Email não preenchido ou já existente.\nEscolha outro email.");
-//                jTextFieldEmail.setText(null);
-//                jTextFieldEmail.requestFocus();
             } catch (HeadlessException | SQLException e) {
                 JOptionPane.showMessageDialog(null, "Erro ao executar a consulta: " + e.getMessage());
             } catch (NumberFormatException e) {
@@ -120,7 +111,7 @@ public class ProductScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                pst = connection.prepareStatement(SQLQuery.DELETE_PRODUCT.getDescription());
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.DELETE_PRODUCT.getQuery());
                 pst.setString(1, jTextFieldIdProduct.getText());
                 int deletedClient = pst.executeUpdate();
                 if (deletedClient > 0) {

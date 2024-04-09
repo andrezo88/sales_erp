@@ -4,7 +4,6 @@ import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,23 +15,21 @@ import net.proteanit.sql.DbUtils;
 
 public final class ClientScreen extends javax.swing.JInternalFrame {
 
-    Connection connection;
     PreparedStatement pst;
     ResultSet rs;
 
-    public ClientScreen(Connection connection) {
-        this.connection = connection;
+    public ClientScreen() {
         initComponents();
         searchClients();
         disableButtons();
     }
-    
+
     private void disableButtons() {
         jButtonEdit.setEnabled(false);
         jButtonDelete.setEnabled(false);
     }
-    
-     private void enableButtons() {
+
+    private void enableButtons() {
         jButtonSave.setEnabled(false);
         jButtonEdit.setEnabled(true);
         jButtonDelete.setEnabled(true);
@@ -40,7 +37,7 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
 
     public void saveClient() {
         try {
-            pst = connection.prepareStatement(SQLQuery.ADD_CLIENT.getDescription());
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.ADD_CLIENT.getQuery());
             pst.setString(1, jTextFieldName.getText());
             pst.setString(2, jTextFieldEmail.getText());
             pst.setString(3, jTextFieldPhone.getText());
@@ -70,8 +67,7 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confima as alterações nos dados deste cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                pst = connection.prepareStatement(SQLQuery.EDIT_CLIENT.getDescription());
-
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.EDIT_CLIENT.getQuery());
                 pst.setString(1, jTextFieldName.getText());
                 pst.setString(2, jTextFieldEmail.getText());
                 pst.setString(3, jTextFieldPhone.getText());
@@ -101,8 +97,7 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
 
     public void searchClients() {
         try {
-            pst = connection.prepareStatement(SQLQuery.SEARCH_CLIENTS.getDescription());
-
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_CLIENTS.getQuery());
             pst.setString(1, jTextFieldSearch.getText() + "%");
             rs = pst.executeQuery();
             jTableClients.setModel(DbUtils.resultSetToTableModel(rs));
@@ -124,7 +119,7 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                pst = connection.prepareStatement(SQLQuery.DELETE_CLIENT.getDescription());
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.DELETE_CLIENT.getQuery());
                 pst.setString(1, jTextFieldId.getText());
                 int deletedClient = pst.executeUpdate();
                 if (deletedClient > 0) {
@@ -361,10 +356,9 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
                         .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButtonSave)
-                        .addComponent(jButtonEdit)
-                        .addComponent(jButtonDelete))
+                    .addComponent(jButtonSave)
+                    .addComponent(jButtonEdit)
+                    .addComponent(jButtonDelete)
                     .addComponent(jButtonAddress))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
@@ -411,11 +405,11 @@ public final class ClientScreen extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldIdActionPerformed
 
     private void jButtonAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddressActionPerformed
-        AddressClient addressClient = new AddressClient(connection);
+        AddressClient addressClient = new AddressClient();
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Address Client", true);
         dialog.getContentPane().add(addressClient.getContentPane());
         dialog.pack();
-        dialog.setVisible(true);   
+        dialog.setVisible(true);
     }//GEN-LAST:event_jButtonAddressActionPerformed
 
 

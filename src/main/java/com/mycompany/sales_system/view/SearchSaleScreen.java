@@ -1,7 +1,7 @@
 package com.mycompany.sales_system.view;
 
+import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,10 +10,8 @@ import net.proteanit.sql.DbUtils;
 
 public class SearchSaleScreen extends javax.swing.JFrame {
 
-    Connection connection;
 
-    public SearchSaleScreen(Connection connection) {
-        this.connection = connection;
+    public SearchSaleScreen() {
         initComponents();
         searchSales();
     }
@@ -21,7 +19,7 @@ public class SearchSaleScreen extends javax.swing.JFrame {
 private void searchSales() {
     try {
         String clientName = jTextFieldSalesSearch.getText();
-        try (PreparedStatement statement = connection.prepareStatement(SQLQuery.SEARCH_SALES.getDescription())) {
+        try (PreparedStatement statement = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_SALES.getQuery().replace("${value}", "c"))) {
             statement.setString(1, clientName + "%");
             ResultSet resultSet = statement.executeQuery();
             jTableSalesTable.setModel(DbUtils.resultSetToTableModel(resultSet));
@@ -144,26 +142,25 @@ private void insertDataIntoTableSearchSales() {
                                             .addComponent(jLabelSearchSalesDateSale)))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jTextFieldSalesSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(28, 28, 28)
-                                                .addComponent(jLabel2))
                                             .addComponent(jTextFieldSearchSalesPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabelSearchSalesPrice))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 289, Short.MAX_VALUE)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabelSearchSalesQuantity)
                                             .addComponent(jTextFieldSearchSalesQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabelSearchSalesTotal)
                                             .addComponent(jTextFieldSearchSalesTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(101, 101, 101)))))
+                                .addGap(101, 101, 101))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelSearchSalesDiscount)
+                                    .addComponent(jTextFieldSearchSalesDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jTextFieldSalesSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(jLabel2)))
+                                .addGap(0, 571, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelSearchSalesDiscount)
-                    .addComponent(jTextFieldSearchSalesDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,7 +171,7 @@ private void insertDataIntoTableSearchSales() {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldSalesSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
+                .addGap(19, 19, 19)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

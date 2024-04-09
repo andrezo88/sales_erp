@@ -3,7 +3,6 @@ package com.mycompany.sales_system.view;
 import com.mycompany.sales_system.factory.ConnectionFactory;
 import com.mycompany.sales_system.utils.sqlQuerys.SQLQuery;
 import java.awt.Frame;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,12 +14,10 @@ import net.proteanit.sql.DbUtils;
 
 public class SalesScreen extends javax.swing.JInternalFrame {
 
-    Connection connection;
     PreparedStatement pst;
     ResultSet rs;
 
-    public SalesScreen(Connection connection) {
-        this.connection = connection;
+    public SalesScreen() {
         initComponents();
         searchProducts();
         searchClients();
@@ -29,7 +26,8 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void searchProducts() {
         try {
-            pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCTS_SALES.getDescription());
+
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_PRODUCTS_SALES.getQuery());
 
             pst.setString(1, jTextFieldSearchProduct.getText() + "%");
             rs = pst.executeQuery();
@@ -41,8 +39,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void searchClients() {
         try {
-            pst = connection.prepareStatement(SQLQuery.SEARCH_CLIENTS_SALES.getDescription());
-
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_CLIENTS_SALES.getQuery());
             pst.setString(1, jTextFieldSearchClient.getText() + "%");
             rs = pst.executeQuery();
             jTableClients.setModel(DbUtils.resultSetToTableModel(rs));
@@ -102,8 +99,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma o pedido deste produto?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             try {
-                pst = connection.prepareStatement(SQLQuery.ADD_SALE.getDescription());
-
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.ADD_SALE.getQuery());
                 Integer productId = parseInteger(jTextFieldIdProduct.getText());
                 if (productId == null) {
                     JOptionPane.showMessageDialog(null, "Selecione um produto.");
@@ -144,7 +140,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
                 } else {
                     updateStock(productId.toString(), quantity);
 
-                    pst = connection.prepareStatement(SQLQuery.ADD_SALE.getDescription());
+                    pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.ADD_SALE.getQuery());
                     pst.setDate(1, new java.sql.Date(new Date().getTime()));
                     pst.setDouble(2, discount);
                     pst.setDouble(3, price);
@@ -180,7 +176,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private boolean searchStock(String id) {
         try {
-            pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getDescription());
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getQuery());
             pst.setString(1, id);
             rs = pst.executeQuery();
 
@@ -218,9 +214,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
     private void updateStock(String id, int quantity) {
         try {
-
-            // Verifica se o produto existe no estoque
-            pst = connection.prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getDescription());
+            pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(SQLQuery.SEARCH_PRODUCT_ID.getQuery());
             pst.setString(1, id);
             rs = pst.executeQuery();
 
@@ -230,7 +224,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
 
                 // Atualiza o estoque
                 String updateQuery = "UPDATE products SET quantity_stock = ? WHERE id = ?";
-                pst = connection.prepareStatement(updateQuery);
+                pst = ConnectionFactory.getInstancy().getConnection().prepareStatement(updateQuery);
                 pst.setInt(1, newStock);
                 pst.setString(2, id);
                 pst.executeUpdate();
@@ -998,7 +992,7 @@ public class SalesScreen extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
-        SearchSaleScreen searchSaleScreen = new SearchSaleScreen(connection);
+        SearchSaleScreen searchSaleScreen = new SearchSaleScreen();
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Search Sale", true);
         dialog.getContentPane().add(searchSaleScreen.getContentPane());
         dialog.pack();

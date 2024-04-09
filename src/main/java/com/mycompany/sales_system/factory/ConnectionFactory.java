@@ -1,30 +1,30 @@
 package com.mycompany.sales_system.factory;
 
+import com.mycompany.sales_system.env.Env;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class ConnectionFactory {
 
-    final  private String DRIVER = "org.firebirdsql.jdbc.FBDriver";
-    final static String URL = "jdbc:firebirdsql://localhost//home/aabreu/Documents/projects/pessoal/database/sales.fdb";
-    final static String USER = "andre";
-    final static String PASSWORD = "Aa134625@@";
-    private Connection connection = null;
+
+    private Connection connection;
     private static ConnectionFactory instancy;
 
     private ConnectionFactory() {
 
         try {
-            Class.forName(DRIVER);
+            Class.forName(Env.DRIVER);
             System.out.println("driver ok!");
         } catch (ClassNotFoundException e) {
             System.out.println("Driver não encontrado.");
         }
 
         try {
-            this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            this.connection = DriverManager.getConnection(Env.URL, Env.USER, Env.PASSWORD);
             System.out.println("banco connectado");
         } catch(SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -32,7 +32,6 @@ public class ConnectionFactory {
     }
 
     public static ConnectionFactory getInstancy() {
-        instancy = null;
         if (instancy == null) {
            instancy = new ConnectionFactory();
         }
@@ -41,5 +40,15 @@ public class ConnectionFactory {
 
     public Connection getConnection() {
         return this.connection;
+    }
+    
+    public void closeConnection() {
+        try {
+            if(!this.connection.isClosed()){
+                this.connection.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

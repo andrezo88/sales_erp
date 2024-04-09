@@ -1,17 +1,10 @@
 package com.mycompany.sales_system.view;
 
 import com.mycompany.sales_system.factory.ConnectionFactory;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 public class Principal extends javax.swing.JFrame {
-
-    ConnectionFactory connectionFactory = ConnectionFactory.getInstancy();
-    Connection connection = connectionFactory.getConnection();
 
     public Principal() {
         initComponents();
@@ -193,7 +186,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientActionPerformed
-        ClientScreen clientScreen = new ClientScreen(connection);
+        ClientScreen clientScreen = new ClientScreen();
         clientScreen.setVisible(true);
         desktop.add(clientScreen);
         
@@ -212,15 +205,11 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonClientActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        try {
-            connection.close();
-        } catch (SQLException ex) {
-            System.out.println(ex);
+      ConnectionFactory.getInstancy().closeConnection();
     }//GEN-LAST:event_formWindowClosing
-    }
+    
     private void jButtonProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProductActionPerformed
-        ProductScreen productScreen = new ProductScreen(connection);
+        ProductScreen productScreen = new ProductScreen();
         productScreen.setVisible(true);
         desktop.add(productScreen);
         
@@ -239,7 +228,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonProductActionPerformed
 
     private void jButtonSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalesActionPerformed
-        SalesScreen salesScreen = new SalesScreen(connection);
+        SalesScreen salesScreen = new SalesScreen();
         salesScreen.setVisible(true);
         desktop.add(salesScreen);
 
